@@ -37,17 +37,8 @@ export function readableStreamFromReader(
 }
 
 interface ReadableStreamFromReaderOptions {
-  /** If the `reader` is also a `Deno.Closer`, automatically close the `reader`
-   * when `EOF` is encountered, or a read error occurs.
-   *
-   * Defaults to `true`. */
   autoClose?: boolean;
-
-  /** The size of chunks to allocate to read, the default is ~16KiB, which is
-   * the maximum size that Deno operations can currently support. */
   chunkSize?: number;
-
-  /** The queuing strategy to create the `ReadableStream` with. */
   strategy?: { highWaterMark?: number | undefined; size?: undefined };
 }
 

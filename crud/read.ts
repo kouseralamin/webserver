@@ -1,3 +1,5 @@
+import { isFile } from "../utilities/is_file.ts";
+import { isDirectory } from "../utilities/is_directory.ts";
 import { readableStreamFromReader } from "../utilities/readableStreamFromReader.ts";
 
 export async function read(reqEvt: Deno.RequestEvent): Promise<Response> {
@@ -17,7 +19,7 @@ export async function read(reqEvt: Deno.RequestEvent): Promise<Response> {
         status: 200,
       });
     } else {
-      return isFile(path).then(async function (value) {
+      return isFile(path).then(async function (value: boolean) {
         if (value === true) {
           const file = await Deno.open(path, { read: true });
           const readableStream = readableStreamFromReader(file);
@@ -40,26 +42,4 @@ export async function read(reqEvt: Deno.RequestEvent): Promise<Response> {
   }
 }
 
-async function isFile(filePath: string): Promise<boolean> {
-  try {
-    if ((await Deno.lstat(filePath)).isFile === true) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (_) {
-    return false;
-  }
-}
 
-async function isDirectory(filePath: string): Promise<boolean> {
-  try {
-    if ((await Deno.lstat(filePath)).isDirectory === true) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (_) {
-    return false;
-  }
-}
