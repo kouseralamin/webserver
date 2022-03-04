@@ -1,4 +1,4 @@
-import { readableStreamFromReader } from "../external/readableStreamFromReader.ts";
+import { readableStreamFromReader } from "../utilities/readableStreamFromReader.ts";
 
 export async function read(reqEvt: Deno.RequestEvent): Promise<Response> {
   try {
