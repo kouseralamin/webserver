@@ -1,11 +1,11 @@
 export async function read(reqEvt: Deno.RequestEvent): Promise<Response> {
   try {
     // TODO: SET PATH FROM COMMAND LINE ARGUMENTS
-    console.log(Deno.cwd() + new URL(reqEvt.request.url).pathname);
+    console.log(decodeURIComponent(Deno.cwd() + new URL(reqEvt.request.url).pathname).replace(/^\\\\\?\\/,"").replace(/\\/g,'\/').replace(/\/\/+/g,'\/'));
     const dirEntries: Deno.DirEntry[] = [];
     for await (
       const dirEntry of Deno.readDir(
-        Deno.cwd() + new URL(reqEvt.request.url).pathname,
+        decodeURIComponent(Deno.cwd() + new URL(reqEvt.request.url).pathname).replace(/^\\\\\?\\/,"").replace(/\\/g,'\/').replace(/\/\/+/g,'\/'),
       )
     ) {
       dirEntries.push(dirEntry);
