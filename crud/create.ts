@@ -15,15 +15,18 @@ export async function create(reqEvt: Deno.RequestEvent): Promise<Response> {
           path.substring(0, path.lastIndexOf("/")).lastIndexOf("/"),
         ),
       );
-      if (_is_directory === true) {
+      const _is_new_directory = await isDirectory(path);
+      if (_is_directory === true && _is_new_directory === false) {
         return Deno.mkdir(path).then(function (_) {
+          console.info("NEW DIRECTORY: " + path);
           return new Response("[CREATED DIRECTORY]", {
             status: 201,
           });
         });
       } else {
+        console.info("ERROR: Can not create a new directory in: " + path);
         return new Response("[ERROR CREATING DIRECTORY]", {
-          status: 201,
+          status: 500,
         });
       }
     } else {
@@ -36,17 +39,20 @@ export async function create(reqEvt: Deno.RequestEvent): Promise<Response> {
         const buffer = await file.arrayBuffer();
         const unit8arr = new Buffer(buffer).bytes();
         return Deno.writeFile(path, unit8arr).then(function (_) {
+          console.info("NEW FILE: " + path);
           return new Response("", {
             status: 201,
           });
         });
       } else {
+        console.info("ERROR: Can not create a new file in: " + path);
         return new Response("", {
           status: 404,
         });
       }
     }
   } catch (_) {
+    console.info("UNKNOWN ERROR: Creating new directory or file.");
     return new Response("", {
       status: 500,
     });
