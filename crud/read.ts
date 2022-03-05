@@ -41,5 +41,3 @@ export async function read(reqEvt: Deno.RequestEvent): Promise<Response> {
     });
   }
 }
-
-

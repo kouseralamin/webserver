@@ -8,21 +8,43 @@ export async function create(reqEvt: Deno.RequestEvent): Promise<Response> {
     const path: string = decodeURIComponent(
       Deno.cwd() + new URL(reqEvt.request.url).pathname,
     ).replace(/^\\\\\?\\/, "").replace(/\\/g, "\/").replace(/\/\/+/g, "\/");
-    const _is_directory = await isDirectory(path.substring(0, path.lastIndexOf("/")));
-    if (_is_directory === true) {
-      const _arrayBuffer = await reqEvt.request.arrayBuffer();
-      const file = new Blob([_arrayBuffer]);
-      const buffer = await file.arrayBuffer();
-      const unit8arr = new Buffer(buffer).bytes();
-      return Deno.writeFile(path, unit8arr).then(function (_) {
-        return new Response("", {
+    if (path[path.length - 1] === "/") {
+      const _is_directory = await isDirectory(
+        path.substring(0, path.lastIndexOf("/")).substring(
+          0,
+          path.substring(0, path.lastIndexOf("/")).lastIndexOf("/"),
+        ),
+      );
+      if (_is_directory === true) {
+        return Deno.mkdir(path).then(function (_) {
+          return new Response("[CREATED DIRECTORY]", {
+            status: 201,
+          });
+        });
+      } else {
+        return new Response("[ERROR CREATING DIRECTORY]", {
           status: 201,
         });
-      });
+      }
     } else {
-      return new Response("", {
-        status: 404,
-      });
+      const _is_directory = await isDirectory(
+        path.substring(0, path.lastIndexOf("/")),
+      );
+      if (_is_directory === true) {
+        const _arrayBuffer = await reqEvt.request.arrayBuffer();
+        const file = new Blob([_arrayBuffer]);
+        const buffer = await file.arrayBuffer();
+        const unit8arr = new Buffer(buffer).bytes();
+        return Deno.writeFile(path, unit8arr).then(function (_) {
+          return new Response("", {
+            status: 201,
+          });
+        });
+      } else {
+        return new Response("", {
+          status: 404,
+        });
+      }
     }
   } catch (_) {
     return new Response("", {
