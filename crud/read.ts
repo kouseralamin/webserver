@@ -9,8 +9,8 @@ export async function read(reqEvt: Deno.RequestEvent): Promise<Response> {
       Deno.cwd() + new URL(reqEvt.request.url).pathname,
     ).replace(/^\\\\\?\\/, "").replace(/\\/g, "\/").replace(/\/\/+/g, "\/");
     console.log(path);
-    const value = await isDirectory(path);
-    if (value === true) {
+    const _is_directory = await isDirectory(path);
+    if (_is_directory === true) {
       const dirEntries: Deno.DirEntry[] = [];
       for await (const dirEntry of Deno.readDir(path)) {
         dirEntries.push(dirEntry);
