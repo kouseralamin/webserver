@@ -1,8 +1,14 @@
 import { create } from "./crud/create.ts";
+import { del } from "./crud/delete.ts";
 import { read } from "./crud/read.ts";
 
 export async function route(reqEvt: Deno.RequestEvent): Promise<Response> {
-  if (reqEvt.request.method.toUpperCase() === "GET") {
+  if (reqEvt.request.method.toUpperCase() === "DELETE") {
+    return await del(reqEvt).then(function (value) {
+      value.headers.append("Access-Control-Allow-Origin", "*");
+      return value;
+    });
+  } else if (reqEvt.request.method.toUpperCase() === "GET") {
     return await read(reqEvt).then(function (value) {
       value.headers.append("Access-Control-Allow-Origin", "*");
       return value;
