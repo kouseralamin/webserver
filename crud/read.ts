@@ -1,6 +1,7 @@
 import { isFile } from "../utilities/is_file.ts";
 import { isDirectory } from "../utilities/is_directory.ts";
 import { readableStreamFromReader } from "../utilities/readableStreamFromReader.ts";
+import { mime } from "../utilities/mime.ts";
 
 export async function read(reqEvt: Deno.RequestEvent): Promise<Response> {
   try {
@@ -24,7 +25,11 @@ export async function read(reqEvt: Deno.RequestEvent): Promise<Response> {
           const file = await Deno.open(path, { read: true });
           const readableStream = readableStreamFromReader(file);
           const _headers = new Headers;
-          _headers.append("content-type", "application/octet-stream");
+          if(path.includes(".")) {
+            _headers.append("content-type", mime(path.split('.').pop()!));
+          } else {
+            _headers.append("content-type", "application/octet-stream");
+          }
           return new Response(readableStream, {
             headers: _headers
           });
