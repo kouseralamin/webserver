@@ -15,4 +15,11 @@ function webserver(path, method) {
 webserver(window.location.hash.substring(1), "GET").then(function(value) {
   console.table(value);
   window.document.body.getElementsByTagName("div")[0].innerText = JSON.stringify(value);
-})
+});
+
+addEventListener('hashchange', _ => {
+  webserver(window.location.hash.substring(1), "GET").then(function(value) {
+    console.table(value);
+    window.document.body.getElementsByTagName("div")[0].innerText = JSON.stringify(value);
+  });
+});
